@@ -1,0 +1,160 @@
+"use client";
+
+import { useState, useEffect, use } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
+import { useSubjects } from "@/hooks/useSubjects";
+import { useNotes } from "@/hooks/useNotes";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import Navbar from "@/components/layout/Navbar";
+import Sidebar from "@/components/layout/Sidebar";
+import NoteList from "@/components/notes/NoteList";
+import ShareLinkModal from "@/components/share/ShareLinkModal";
+import AddSubjectModal from "@/components/subject/AddSubjectModal";
+import { Share2, FolderOpen } from "lucide-react";
+
+export default function SubjectDetailPage({ params }) {
+  const { subjectId } = use(params);
+  const { user, loading: authLoading, userProfile } = useRequireAuth();
+  const { subjects, addSubject } = useSubjects(user?.uid);
+
+  const authorName = userProfile?.displayName || user?.displayName || "Unknown";
+  const { notes, loading: notesLoading } = useNotes(
+    subjectId,
+    user?.uid,
+    authorName,
+  );
+
+  const [subject, setSubject] = useState(null);
+  const [subjectLoading, setSubjectLoading] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [addModalOpen, setAddModalOpen] = useState(false);
+
+  // Fetch subject document on mount
+  useEffect(() => {
+    if (!subjectId) return;
+
+    const fetchSubject = async () => {
+      setSubjectLoading(true);
+      try {
+        const subjectDoc = await getDoc(doc(db, "subjects", subjectId));
+        if (subjectDoc.exists()) {
+          setSubject({ id: subjectDoc.id, ...subjectDoc.data() });
+        } else {
+          setSubject(null);
+        }
+      } catch (error) {
+        console.error("Error fetching subject:", error);
+      } finally {
+        setSubjectLoading(false);
+      }
+    };
+
+    fetchSubject();
+  }, [subjectId]);
+
+  if (authLoading || subjectLoading) {
+    return <LoadingSpinner />;
+  }
+
+  if (!user) {
+    return null;
+  }
+
+  if (!subject) {
+    return (
+      <div className="min-h-screen bg-surface">
+        <Navbar onToggleSidebar={() => {}} />
+        <div className="flex items-center justify-center py-20">
+          <p className="text-surface-muted">Subject not found.</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex min-h-screen bg-surface">
+      <Sidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        subjects={subjects}
+        onAddSubject={() => setAddModalOpen(true)}
+      />
+
+      <div className="flex flex-1 flex-col">
+        <Navbar onToggleSidebar={() => setSidebarOpen((prev) => !prev)} />
+
+        <main className="flex-1 p-6 space-y-6">
+          {/* Subject header */}
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3">
+              <div
+                className="h-10 w-1.5 rounded-full"
+                style={{ backgroundColor: subject.color }}
+              />
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  {subject.name}
+                </h1>
+                <p className="text-sm text-surface-muted">{subject.code}</p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShareOpen(true)}
+              className="flex items-center gap-2 rounded-lg border border-surface-border bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-surface"
+            >
+              <Share2 className="h-4 w-4" />
+              Share
+            </button>
+          </div>
+
+          {/* Two-column layout: Notes + Files placeholder */}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {/* Notes */}
+            <section>
+              <NoteList
+                notes={notes}
+                subjectId={subjectId}
+                loading={notesLoading}
+              />
+            </section>
+
+            {/* Files — placeholder for Phase 5 */}
+            <section>
+              <div className="mb-4 flex items-center gap-2">
+                <FolderOpen className="h-5 w-5 text-brand" />
+                <h2 className="text-lg font-bold text-gray-900">Files</h2>
+              </div>
+              <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-surface-border bg-surface-card p-12 text-center">
+                <FolderOpen className="h-12 w-12 text-surface-muted mb-4" />
+                <h3 className="text-lg font-semibold text-gray-800">
+                  Files coming soon
+                </h3>
+                <p className="mt-1 max-w-sm text-sm text-surface-muted">
+                  File uploads will be available in Phase 5.
+                </p>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+
+      {/* Share modal */}
+      <ShareLinkModal
+        subject={subject}
+        isOpen={shareOpen}
+        onClose={() => setShareOpen(false)}
+      />
+
+      {/* Add Subject modal (from sidebar) */}
+      <AddSubjectModal
+        isOpen={addModalOpen}
+        onClose={() => setAddModalOpen(false)}
+        onAdd={addSubject}
+      />
+    </div>
+  );
+}
