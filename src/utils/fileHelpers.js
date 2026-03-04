@@ -29,4 +29,4 @@ export const ACCEPTED_FILE_TYPES = [
   "application/zip",
 ];
 
-export const MAX_FILE_SIZE_BYTES = 25 * 1024 * 1024; // 25MB
+export const MAX_FILE_SIZE_BYTES = 16 * 1024 * 1024; // 16MB (Uploadthing free tier)

@@ -6,10 +6,13 @@ import { db } from "@/lib/firebase";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { useSubjects } from "@/hooks/useSubjects";
 import { useNotes } from "@/hooks/useNotes";
+import { useFiles } from "@/hooks/useFiles";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import Navbar from "@/components/layout/Navbar";
 import Sidebar from "@/components/layout/Sidebar";
 import NoteList from "@/components/notes/NoteList";
+import FileUploader from "@/components/files/FileUploader";
+import FileList from "@/components/files/FileList";
 import ShareLinkModal from "@/components/share/ShareLinkModal";
 import AddSubjectModal from "@/components/subject/AddSubjectModal";
 import { Share2, FolderOpen } from "lucide-react";
@@ -25,6 +28,13 @@ export default function SubjectDetailPage({ params }) {
     user?.uid,
     authorName,
   );
+  const {
+    files,
+    loading: filesLoading,
+    uploadFile,
+    deleteFile,
+    isUploading,
+  } = useFiles(subjectId, user?.uid, authorName);
 
   const [subject, setSubject] = useState(null);
   const [subjectLoading, setSubjectLoading] = useState(true);
@@ -122,20 +132,24 @@ export default function SubjectDetailPage({ params }) {
               />
             </section>
 
-            {/* Files — placeholder for Phase 5 */}
+            {/* Files */}
             <section>
               <div className="mb-4 flex items-center gap-2">
                 <FolderOpen className="h-5 w-5 text-brand" />
                 <h2 className="text-lg font-bold text-gray-900">Files</h2>
+                {files.length > 0 && (
+                  <span className="rounded-full bg-brand-muted px-2.5 py-0.5 text-xs font-semibold text-brand">
+                    {files.length} {files.length === 1 ? "file" : "files"}
+                  </span>
+                )}
               </div>
-              <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-surface-border bg-surface-card p-12 text-center">
-                <FolderOpen className="h-12 w-12 text-surface-muted mb-4" />
-                <h3 className="text-lg font-semibold text-gray-800">
-                  Files coming soon
-                </h3>
-                <p className="mt-1 max-w-sm text-sm text-surface-muted">
-                  File uploads will be available in Phase 5.
-                </p>
+              <div className="space-y-4">
+                <FileUploader onUpload={uploadFile} isUploading={isUploading} />
+                <FileList
+                  files={files}
+                  onDelete={deleteFile}
+                  loading={filesLoading}
+                />
               </div>
             </section>
           </div>

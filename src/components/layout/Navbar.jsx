@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BookOpen, LogOut, ChevronDown, Menu } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -45,10 +46,13 @@ export default function Navbar({ onToggleSidebar }) {
         </button>
 
         {/* Logo */}
-        <div className="flex items-center gap-2">
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-2 rounded-lg px-1 transition-colors hover:opacity-80"
+        >
           <BookOpen className="h-6 w-6 text-brand" />
           <span className="text-lg font-bold text-gray-900">StudyHub</span>
-        </div>
+        </Link>
       </div>
 
       {/* Right section */}
