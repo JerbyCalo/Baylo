@@ -24,15 +24,9 @@ export default function BayloLogo({
 
   return (
     <div className="flex items-center gap-2">
-      {<Image src="/logo.png" alt="Baylo" /> || (
-        <Globe className={`${icon} text-brand-teal-dark`} />
-      )}
       <div
         className={`${circle} flex shrink-0 items-center justify-center rounded-full bg-brand-yellow border-2 border-brand-gold`}
       >
-        {<Image src="/logo.png" alt="Baylo" /> || (
-          <Globe className={`${icon} text-brand-teal-dark`} />
-        )}
         <Globe className={`${icon} text-brand-teal-dark`} />
       </div>
 
