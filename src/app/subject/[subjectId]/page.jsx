@@ -7,12 +7,14 @@ import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { useSubjects } from "@/hooks/useSubjects";
 import { useNotes } from "@/hooks/useNotes";
 import { useFiles } from "@/hooks/useFiles";
+import { useMembers } from "@/hooks/useMembers";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import Navbar from "@/components/layout/Navbar";
 import Sidebar from "@/components/layout/Sidebar";
 import NoteList from "@/components/notes/NoteList";
 import FileUploader from "@/components/files/FileUploader";
 import FileList from "@/components/files/FileList";
+import MemberList from "@/components/members/MemberList";
 import ShareLinkModal from "@/components/share/ShareLinkModal";
 import AddSubjectModal from "@/components/subject/AddSubjectModal";
 import { Share2, FolderOpen } from "lucide-react";
@@ -36,6 +38,7 @@ export default function SubjectDetailPage({ params }) {
     deleteFile,
     isUploading,
   } = useFiles(subjectId, user?.uid, authorName);
+  const { members, loading: membersLoading } = useMembers(subjectId);
 
   const [subject, setSubject] = useState(null);
   const [subjectLoading, setSubjectLoading] = useState(true);
@@ -151,8 +154,8 @@ export default function SubjectDetailPage({ params }) {
             </div>
           </div>
 
-          {/* Two-column layout: Notes + Files placeholder */}
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          {/* Three-column layout on xl, single column below */}
+          <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
             {/* Notes */}
             <section>
               <NoteList
@@ -183,6 +186,16 @@ export default function SubjectDetailPage({ params }) {
                   currentUserId={user.uid}
                 />
               </div>
+            </section>
+
+            {/* Members */}
+            <section>
+              <MemberList
+                members={members}
+                ownerId={subject.ownerId}
+                currentUserId={user.uid}
+                loading={membersLoading}
+              />
             </section>
           </div>
         </main>
