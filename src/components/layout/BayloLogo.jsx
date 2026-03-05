@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { Globe } from "lucide-react";
 
 /**
  * BayloLogo — reusable logo component.
@@ -16,22 +15,23 @@ export default function BayloLogo({
   textClass = "text-white",
 }) {
   const sizeMap = {
-    sm: { circle: "w-6 h-6", icon: "h-3 w-3", text: "text-base" },
-    md: { circle: "w-8 h-8", icon: "h-4 w-4", text: "text-xl" },
-    lg: { circle: "w-12 h-12", icon: "h-6 w-6", text: "text-3xl" },
+    sm: { imgSize: 26, text: "text-base" },
+    md: { imgSize: 34, text: "text-xl" },
+    lg: { imgSize: 50, text: "text-3xl" },
   };
 
-  const { circle, icon, text } = sizeMap[size] || sizeMap.md;
+  const { imgSize, text } = sizeMap[size] || sizeMap.md;
 
   return (
     <div className="flex items-center gap-2">
-      <Image src="/logo.png" alt="Baylo" width={32} height={32} />
-      <div
-        className={`${circle} flex shrink-0 items-center justify-center rounded-full bg-brand-yellow border-2 border-brand-gold`}
-      >
-        <Image src="/logo.png" alt="Baylo" width={32} height={32} />
-        <Globe className={`${icon} text-brand-teal-dark`} />
-      </div>
+      <Image
+        src="/logo.png"
+        alt="Baylo"
+        width={imgSize}
+        height={imgSize}
+        className="bg-transparent"
+        unoptimized
+      />
 
       {showText && (
         <span className={`font-bold ${text} ${textClass}`}>Baylo</span>

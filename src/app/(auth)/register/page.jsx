@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { ArrowLeftRight, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import BayloLogo from "@/components/layout/BayloLogo";
 
 export default function RegisterPage() {
   const { register } = useAuth();
@@ -35,9 +36,8 @@ export default function RegisterPage() {
     <div className="flex min-h-screen items-center justify-center bg-surface px-4">
       <div className="w-full max-w-md animate-fade-in">
         {/* Logo */}
-        <div className="mb-8 flex items-center justify-center gap-2">
-          <ArrowLeftRight className="h-8 w-8 text-brand-teal-dark" />
-          <span className="text-2xl font-bold text-brand-teal-dark">Baylo</span>
+        <div className="mb-8 flex items-center justify-center">
+          <BayloLogo size="lg" textClass="text-brand-teal-dark" />
         </div>
 
         {/* Card */}

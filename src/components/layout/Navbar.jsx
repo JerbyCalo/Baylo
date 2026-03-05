@@ -59,7 +59,7 @@ export default function Navbar({ onToggleSidebar }) {
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setDropdownOpen((prev) => !prev)}
-          className="flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-surface"
+          className="flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-white/10"
         >
           {/* Avatar */}
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-yellow text-sm font-bold text-brand-teal-dark">
@@ -76,14 +76,14 @@ export default function Navbar({ onToggleSidebar }) {
 
         {/* Dropdown */}
         {dropdownOpen && (
-          <div className="absolute right-0 mt-2 w-56 rounded-xl border border-brand-brown bg-white py-1 shadow-lg animate-fade-in">
+          <div className="absolute right-0 mt-2 w-56 rounded-xl border border-brand-brown bg-white py-1 shadow-lg animate-fade-in z-50 text-brand-teal-dark">
             {/* User info */}
-            <div className="border-b border-brand-brown px-4 py-3">
-              <p className="text-sm font-semibold text-gray-900">
+            <div className="border-b border-brand-brown/30 px-4 py-3">
+              <p className="text-sm font-semibold text-brand-teal-dark">
                 {displayName}
               </p>
               {school && (
-                <p className="mt-0.5 text-xs text-surface-muted">{school}</p>
+                <p className="mt-0.5 text-xs text-brand-brown">{school}</p>
               )}
             </div>
             {/* Logout */}
