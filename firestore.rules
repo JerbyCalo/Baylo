@@ -15,8 +15,9 @@ service cloud.firestore {
       allow read:   if request.auth.uid in resource.data.memberIds;
       // Any authenticated user can create a subject
       allow create: if request.auth != null;
-      // Any member can update the subject (e.g. joining adds to memberIds)
-      allow update: if request.auth.uid in resource.data.memberIds;
+      // Any authenticated user can update a subject (required for joinByCode,
+      // which arrayUnions a new userId into memberIds before they're a member)
+      allow update: if request.auth != null;
       // Only the owner can delete the subject
       allow delete: if request.auth.uid == resource.data.ownerId;
 
