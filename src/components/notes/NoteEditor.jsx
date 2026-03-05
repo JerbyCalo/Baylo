@@ -86,7 +86,8 @@ export default function NoteEditor({ initialContent = "", onChange }) {
         <div className="mx-1 h-6 w-px bg-brand-brown/30" />
 
         <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 1 }).run()
           }
           isActive={editor.isActive("heading", { level: 1 })}
           icon={Heading1}
